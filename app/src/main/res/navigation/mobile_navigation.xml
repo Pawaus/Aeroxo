@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_profile">
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.pawa.aeroxo.Profile"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile"/>
+    <fragment
+        android:id="@+id/navigation_storage"
+        android:name="com.pawa.aeroxo.ui.storage.StorageFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_storage" />
+
+    <fragment
+        android:id="@+id/navigation_cheks"
+        android:name="com.pawa.aeroxo.ui.cheks.CheksFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_cheks" />
+
+    <fragment
+        android:id="@+id/navigation_uchet"
+        android:name="com.pawa.aeroxo.ui.uchet.UchetFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_uchet" />
+
+</navigation>

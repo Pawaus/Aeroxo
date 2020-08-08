@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/orageaeroxo</item>
+        <item name="colorPrimaryDark">@color/grayAeroxo</item>
+        <item name="colorAccent">@color/orageaeroxo</item>
+
+    </style>
+
+    <style name="styleProfile" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/orageaeroxo</item>
+        <item name="colorPrimaryDark">@color/grayAeroxo</item>
+        <item name="colorAccent">@color/orageaeroxo</item>
+    </style>
+</resources>
