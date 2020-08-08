@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity  {
         //FB = new FireBase();
         //trackViewModel = new ViewModelProvider(this).get(TrackViewModel.class);
         //handlerUpdateDatabse.postDelayed(updateAll,100);
-        startService(new Intent(MainActivity.this,Delayed.class));
+        //startService(new Intent(MainActivity.this,Delayed.class));
         //(FloatingActionButton)findViewById(R.id.floatingActionButton).setOnClickListener(this);
     }
 /*
