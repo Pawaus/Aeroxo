@@ -78,7 +78,6 @@ public class Profile extends Fragment {
         super.onStart();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-        if(user!=null) {
             profileModelView = new ViewModelProvider(getActivity()).get(ProfileModelView.class);
             trackViewModel = new ViewModelProvider(getActivity()).get(TrackViewModel.class);
             profileModelView.getTracksFirebase().observe(getActivity(), new Observer<List<Track>>() {
@@ -119,15 +118,12 @@ public class Profile extends Fragment {
                     }
                 }
             });
-        }else{
-            handlerUpdate.postDelayed(update,40);
-            Log.d("profile", "post delay start");
-        }
+
     }
     private Runnable update = new Runnable() {
         @Override
         public void run() {
-            if(user!=null) {
+
                 profileModelView = new ViewModelProvider(getActivity()).get(ProfileModelView.class);
                 trackViewModel = new ViewModelProvider(getActivity()).get(TrackViewModel.class);
                 profileModelView.getTracksFirebase().observe(getActivity(), new Observer<List<Track>>() {
@@ -168,12 +164,6 @@ public class Profile extends Fragment {
                         }
                     }
                 });
-            }else{
-                handlerUpdate.postDelayed(update,40);
-                mAuth = FirebaseAuth.getInstance();
-                user = mAuth.getCurrentUser();
-                Log.d("profile", "post delay runnable");
-            }
         }
     };
     @Override
