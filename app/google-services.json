@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "861053410446",
+    "firebase_url": "https://aeroxo.firebaseio.com",
+    "project_id": "aeroxo",
+    "storage_bucket": "aeroxo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861053410446:android:03b9386ce9ad2ef3adbddf",
+        "android_client_info": {
+          "package_name": "com.pawa.aeroxo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "861053410446-70lftlkqrp9aggamokg2hrhjgbddqvk9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pawa.aeroxo",
+            "certificate_hash": "83959bd0f7c6aa6c3259a319ab7906b18a264f4d"
+          }
+        },
+        {
+          "client_id": "861053410446-182sp8v20duu3mbsvqb851amto1pg0op.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSXZ_OXkBjFVb2hYBxQUCbT7GkJtWLGZo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "861053410446-182sp8v20duu3mbsvqb851amto1pg0op.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
