@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import androidx.lifecycle.Observer;
@@ -52,8 +53,6 @@ public class Profile extends Fragment {
     private FirebaseUser user;
     private TextView textName,textPost;
     private ImageView profileImage;
-    Handler handlerUpdate = new Handler();
-    //private Handler handlerUpdateTracks = new Handler();
     private SharedPreferences sharedPreferences;
     private final String NAME = "Name";
     private final String SURNAME = "Surname";
@@ -62,132 +61,70 @@ public class Profile extends Fragment {
     private final String ADMIN = "Admin";
     private final String UID = "Uid";
     private final String SUMCHECKS = "SumChecks";
-    //private Database db;
     private LinearLayout linearInScroll,linearProfile;
     private TrackViewModel trackViewModel;
     private ProfileModelView profileModelView;
-    private boolean isUpdateTrack;
-    private boolean isLoadTracks;
-    private boolean isStartLoadTracks;
     ProgressBar progressBar;
     List<Track>tracksDatabase;
-    private AuthFirebase authFirebase;
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-            profileModelView = new ViewModelProvider(getActivity()).get(ProfileModelView.class);
-            trackViewModel = new ViewModelProvider(getActivity()).get(TrackViewModel.class);
-            profileModelView.getTracksFirebase().observe(getActivity(), new Observer<List<Track>>() {
-                @Override
-                public void onChanged(List<Track> tracks) {
-                    //Toast.makeText(getActivity(), "Is up to date", Toast.LENGTH_LONG).show();
-                    Log.d("profile", "get tracks");
-                    //progressBar.setVisibility(View.INVISIBLE);
-                    //offProgress();
-                    tracksDatabase = trackViewModel.getTracks().getValue();
-
-                    for (Track track : tracks) {
-                        //AddViewTrackInScroll(track);
-                        boolean isContain = false;
-                        for (Track track1 : tracksDatabase) {
-                            if (track.equals(track1))
-                                isContain = true;
-                        }
-                        if (!isContain)
-                            trackViewModel.insert(track);
+        sharedPreferences = getActivity().getPreferences(MODE_PRIVATE);
+        textName.setText(sharedPreferences.getString(NAME,""));
+        textPost.setText(sharedPreferences.getString(POST,""));
+        profileModelView = new ViewModelProvider(getActivity()).get(ProfileModelView.class);
+        trackViewModel = new ViewModelProvider(getActivity()).get(TrackViewModel.class);
+        profileModelView.getTracksFirebase().observe(getActivity(), new Observer<List<Track>>() {
+            @Override
+            public void onChanged(List<Track> tracks) {
+                Toast.makeText(getActivity(), "Is up to date", Toast.LENGTH_LONG).show();
+                Log.d("profile", "get tracks");
+                progressBar.setVisibility(View.INVISIBLE);
+                offProgress();
+                tracksDatabase = trackViewModel.getTracks().getValue();
+                //TODO: выводить кнопочку обновить, если треки поменялись
+                for (Track track : tracks) {
+                    //AddViewTrackInScroll(track);
+                    boolean isContain = false;
+                    for (Track track1 : tracksDatabase) {
+                        if (track.equals(track1))
+                            isContain = true;
                     }
+                    if (!isContain)
+                        trackViewModel.insert(track);
+                }
 
+            }
+        });
+        profileModelView.getUserData().observe(getActivity(), new Observer<Map<String, Object>>() {
+            @Override
+            public void onChanged(Map<String, Object> stringObjectMap) {
+                updateUserDataToPreferences(stringObjectMap);
+            }
+        });
+        trackViewModel.getTracks().observe(getActivity(), new Observer<List<Track>>() {
+            @Override
+            public void onChanged(List<Track> tracks) {
+                Log.d("profile", "on change database");
+                Log.d("profile", String.valueOf(trackViewModel.getTracks().getValue().size()));
+                for (Track track : tracks) {
+                    AddViewTrackInScroll(track);
                 }
-            });
-            profileModelView.getUserData().observe(getActivity(), new Observer<Map<String, Object>>() {
-                @Override
-                public void onChanged(Map<String, Object> stringObjectMap) {
-                    updateUserDataToPreferences(stringObjectMap);
-                }
-            });
-            trackViewModel.getTracks().observe(getActivity(), new Observer<List<Track>>() {
-                @Override
-                public void onChanged(List<Track> tracks) {
-                    Log.d("profile", "on change database");
-                    Log.d("profile", String.valueOf(trackViewModel.getTracks().getValue().size()));
-                    for (Track track : tracks) {
-                        AddViewTrackInScroll(track);
-                    }
-                }
-            });
-
+            }
+        });
     }
-    private Runnable update = new Runnable() {
-        @Override
-        public void run() {
 
-                profileModelView = new ViewModelProvider(getActivity()).get(ProfileModelView.class);
-                trackViewModel = new ViewModelProvider(getActivity()).get(TrackViewModel.class);
-                profileModelView.getTracksFirebase().observe(getActivity(), new Observer<List<Track>>() {
-                    @Override
-                    public void onChanged(List<Track> tracks) {
-                        Toast.makeText(getActivity(), "Is up to date", Toast.LENGTH_LONG).show();
-                        Log.d("profile", "get tracks");
-                        //progressBar.setVisibility(View.INVISIBLE);
-                        //offProgress();
-                        tracksDatabase = trackViewModel.getTracks().getValue();
-
-                        for (Track track : tracks) {
-                            //AddViewTrackInScroll(track);
-                            boolean isContain = false;
-                            for (Track track1 : tracksDatabase) {
-                                if (track.equals(track1))
-                                    isContain = true;
-                            }
-                            if (!isContain)
-                                trackViewModel.insert(track);
-                        }
-
-                    }
-                });
-                profileModelView.getUserData().observe(getActivity(), new Observer<Map<String, Object>>() {
-                    @Override
-                    public void onChanged(Map<String, Object> stringObjectMap) {
-                        updateUserDataToPreferences(stringObjectMap);
-                    }
-                });
-                trackViewModel.getTracks().observe(getActivity(), new Observer<List<Track>>() {
-                    @Override
-                    public void onChanged(List<Track> tracks) {
-                        Log.d("profile", "on change database");
-                        Log.d("profile", String.valueOf(trackViewModel.getTracks().getValue().size()));
-                        for (Track track : tracks) {
-                            AddViewTrackInScroll(track);
-                        }
-                    }
-                });
-        }
-    };
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View root = inflater.inflate(R.layout.fragment_profile, container, false);
-
         textName = (TextView)root.findViewById(R.id.viewNameProfile);
         textPost = (TextView)root.findViewById(R.id.viewPost);
         profileImage = (ImageView)root.findViewById(R.id.imageProfile);
         linearInScroll = (LinearLayout)root.findViewById(R.id.linearInScroll);
-
-        authFirebase = new ViewModelProvider(getActivity()).get(AuthFirebase.class);
-        authFirebase.getAuth().observe(getActivity(), new Observer<FirebaseAuth>() {
-            @Override
-            public void onChanged(FirebaseAuth firebaseAuth) {
-
-            }
-        });
-
-        //Log.d("DataBase",String.valueOf(trackViewModel.getCount()));
-        isUpdateTrack = false;
-        isLoadTracks = false;
-        isStartLoadTracks = false;
         root.findViewById(R.id.btnSignOut).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -202,65 +139,11 @@ public class Profile extends Fragment {
         });
         setRetainInstance(true);
         Log.d("profile","create");
-
         progressBar = (ProgressBar)root.findViewById(R.id.progress_circular);
-        //progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         return root;
     }
 
-    /*private Runnable getInformation = new Runnable() {
-        @Override
-        public void run() {
-            if(!FB.getUserData()){
-                //handlerUpdateUserData.postDelayed(this,50);
-            }else{
-                //updateUserDataToPreferences();
-            }
-        }
-    };
-    private Runnable getTracks = new Runnable() {
-        @Override
-        public void run() {
-            if (!isLoadTracks) {
-                if (!isStartLoadTracks) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            db = Room.databaseBuilder(getContext(), Database.class, "database").build();
-                            tracksDatabase = db.trackDao().getAll();
-                            isLoadTracks = true;
-                        }
-                    }).start();
-                    isStartLoadTracks = true;
-                    handlerUpdateTracks.postDelayed(this,50);
-                } else {
-                    handlerUpdateTracks.postDelayed(this, 50);
-                }
-            } else {
-                Log.d("Track", String.valueOf(tracksDatabase.size()) + " In DB");
-                linearInScroll.removeAllViews();
-                for (Track track : tracksDatabase) {
-                    AddViewTrackInScroll(track);
-                }
-            }
-        }
-
-    };*/
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("profile","resume");
-        if(mAuth!=null){
-            mAuth = FirebaseAuth.getInstance();
-            user = mAuth.getCurrentUser();
-            if(user!=null) {
-                sharedPreferences = getActivity().getPreferences(MODE_PRIVATE);
-                textName.setText(sharedPreferences.getString(NAME,""));
-                textPost.setText(sharedPreferences.getString(POST,""));
-            }
-        }
-        //loadFromDB();
-    }
     private void updateUserDataToPreferences(Map<String,Object> userData){
         sharedPreferences = getActivity().getPreferences(MODE_PRIVATE);
         String name = userData.get(NAME).toString();
@@ -317,10 +200,4 @@ public class Profile extends Fragment {
         linearInScroll.addView(linearLayout,layoutParams);
     }
     private void offProgress(){progressBar.setVisibility(View.INVISIBLE);}
-    private void loadFromDB(){
-        tracksDatabase = trackViewModel.getTracks().getValue();
-        for (Track track:tracksDatabase){
-            AddViewTrackInScroll(track);
-        }
-    }
 }

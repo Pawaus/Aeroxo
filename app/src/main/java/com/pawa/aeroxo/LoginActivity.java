@@ -155,7 +155,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
-                StartMain();
+                //StartMain();
             } catch (ApiException e) {
                 Toast.makeText(getApplicationContext(),R.string.error_signin_google,Toast.LENGTH_LONG).show();
                 loadingProgressBar.setVisibility(View.INVISIBLE);
@@ -171,6 +171,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
+                            StartMain();
                         } else {
                             Toast.makeText(getApplicationContext(), R.string.error_signin_google,Toast.LENGTH_LONG).show();
                         }
