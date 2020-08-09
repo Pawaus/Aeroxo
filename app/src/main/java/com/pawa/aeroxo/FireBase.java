@@ -1,6 +1,5 @@
 package com.pawa.aeroxo;
 
-import android.app.Application;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,18 +23,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 public class FireBase {
-
     private FirebaseAuth mAuth;
     private Map<String,Object> UserData;
     private List<Track> tracks = new ArrayList<>();
@@ -49,64 +43,21 @@ public class FireBase {
     private int TRACK = 6;
     private int RECEIVER = 5;
     private String fullName;
-    private boolean isUpdateContacts;
-    private boolean isUpdateTracks;
-    private boolean isUpdateUserData;
-
     LiveData<List<Track>>getTracksLive(){return tracksLiveData;}
     LiveData<List<Contact>>getContactsLive(){return contactsLiveData;}
     LiveData<Map<String,Object>>getUserDataLive(){return userDataLive;}
     FireBase(){
         mAuth = FirebaseAuth.getInstance();
-        isUpdateContacts = false;
-        isUpdateTracks = false;
-        isUpdateUserData = false;
         getContactsFromFirebase();
         getUserData();
     }
-
-    public boolean isUpdateContacts(){return isUpdateContacts;}
-
-    public boolean isUpdateTracks() {return isUpdateTracks;}
-
-    public boolean isUpdateUserData() {return isUpdateUserData;}
-/*
-    public String getName(){
-        return Objects.requireNonNull(UserData.get("Name")).toString();
-    }
-    public String getSumChecks(){
-        return Objects.requireNonNull(UserData.get("SumChecks")).toString();
-    }
-    public String getPost(){
-        return Objects.requireNonNull(UserData.get("Post")).toString();
-    }
-    public String getSurname(){
-        return Objects.requireNonNull(UserData.get("Surname")).toString();
-    }
-    public String getUid(){
-        return Objects.requireNonNull(UserData.get("Uid")).toString();
-    }
-    public String getAdmin(){
-        return Objects.requireNonNull(UserData.get("AdminMode")).toString();
-    }
-    public List<Track>getTracks(){
-        return tracks;
-    }
-*/
     public boolean getTracksChina(){
-        if(contacts.size()==0) {
-            getContactsFromFirebase();
-            return false;
-        }
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("China");
-
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String value = dataSnapshot.getValue(String.class);
-                if(tracks.size()!=0)
-                    return;
                 try {
                     JSONObject reader = new JSONObject(value);
                     JSONArray array = reader.getJSONArray("result");
@@ -125,7 +76,6 @@ public class FireBase {
                             tracks.add(track);
                         }
                     }
-                    isUpdateTracks = true;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -135,14 +85,11 @@ public class FireBase {
                         UpdateStatusTracks();
                     }
                 }).start();
-                //UpdateStatusTracks();
 
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                //Toast.makeText(getActivity(),"cancelled",Toast.LENGTH_LONG).show();
-                return;
+
             }
         });
         if(tracks.size()==0)
@@ -154,19 +101,17 @@ public class FireBase {
         for(Track track:tracks){
             Track24 getInformTrack = new Track24();
             String result = "";
-            getInformTrack.execute("https://api.track24.ru/tracking.json.php?apiKey=b03370759b96d56d48d0541e9402e86e&pretty=true&domain=demo.track24.ru&lng=en&code="+track.trackNumber);
+            getInformTrack.execute(track.trackNumber);
             try{
                 result = getInformTrack.get();
                 track.status = result;
-                Log.d("Main",result);
-                //trackViewModel.insert(track);
+                Log.d("Track24",result);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
         tracksLiveData.postValue(tracks);
     }
-
     public void getContactsFromFirebase(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("Contacts");
@@ -192,7 +137,6 @@ public class FireBase {
                             fullName = contact.FullName;
                         }
                     }
-                    isUpdateContacts = true;
                     contactsLiveData.setValue(contacts);
                     //TODO:Добавление контактов в базу данных
                     getTracksChina();
@@ -220,7 +164,6 @@ public class FireBase {
                         Map<String,Object> userData = document.getData();
                         UserData = userData;
                         Log.d("Firebase","Have a doc");
-                        isUpdateUserData = true;
                         userDataLive.setValue(UserData);
                     }else{
                         Log.d("Firebase","No document with name "+mAuth.getCurrentUser().getEmail().toString());
