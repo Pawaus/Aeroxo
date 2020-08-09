@@ -26,6 +26,7 @@ public class JobUpdateTracks extends JobService {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                //TODO:Переделать обращение к базе данных
                 Database db = Room.databaseBuilder(getApplicationContext(),Database.class,"database").build();
                 FireBase fireBase = new FireBase();
                 List<Track>  tracks = db.trackDao().getAll();
@@ -35,6 +36,7 @@ public class JobUpdateTracks extends JobService {
                 for (Track track:tracks){
                     Track24 getInformTrack = new Track24();
                     String result = "";
+                    //TODO:переделать запросы
                     getInformTrack.execute("https://api.track24.ru/tracking.json.php?apiKey=b03370759b96d56d48d0541e9402e86e&pretty=true&domain=demo.track24.ru&lng=en&code="+track.trackNumber);
                     try{
                         result = getInformTrack.get();

@@ -7,13 +7,12 @@
     app:theme="@style/styleProfile"
     android:orientation="vertical"
     tools:context=".Profile">
-
+    <!-- TODO:может переделать на coordinator-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/linearProfile"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,7 +26,6 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_margin="4dp"
-
                 android:src="@drawable/profile2" />
 
             <LinearLayout
@@ -53,8 +51,9 @@
                 android:layout_width="40dp"
                 android:src="@drawable/logout"
                 android:layout_height="40dp" />
+            <!-- TODO:Сделать активной кнопку-->
         </LinearLayout>
-
+        <!-- TODO:Посмотреть другой скролл, более новый из шаблонов-->
         <ScrollView
             android:id="@+id/scrollProfile"
             android:layout_width="match_parent"
@@ -69,7 +68,7 @@
             </LinearLayout>
 
         </ScrollView>
-
+        <!-- TODO:Удалить ее-->
         <Button
             android:id="@+id/btnSignOut"
             android:layout_width="match_parent"
@@ -79,7 +78,7 @@
             android:text="@string/button_exit"
             android:visibility="invisible"
             android:textColor="@color/grayAeroxo" />
-
+        <!-- TODO:Поменять или перенести прогресс бар-->
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

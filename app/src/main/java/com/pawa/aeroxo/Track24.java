@@ -18,6 +18,7 @@ public class Track24 extends AsyncTask<String,String,String> {
 
         GetQueries getQueries = new GetQueries();
         try {
+            //TODO:передавать только трек номер
             s = getQueries.doGet(strings[0]);
             Log.d("Track24","send request");
         } catch (Exception e) {

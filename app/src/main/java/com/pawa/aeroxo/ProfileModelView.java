@@ -18,7 +18,6 @@ public class ProfileModelView extends AndroidViewModel {
 
     public ProfileModelView(@NonNull Application application) {
         super(application);
-        Log.d("profile","create model view");
         FB = new FireBase();
     }
     public LiveData<List<Track>>getTracksFirebase(){

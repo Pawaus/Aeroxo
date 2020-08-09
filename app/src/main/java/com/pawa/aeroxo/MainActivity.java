@@ -65,54 +65,9 @@ public class MainActivity extends AppCompatActivity  {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
-        //mAuth = FirebaseAuth.getInstance();
-        //user = mAuth.getCurrentUser();
-        //FB = new FireBase();
-        //trackViewModel = new ViewModelProvider(this).get(TrackViewModel.class);
-        //handlerUpdateDatabse.postDelayed(updateAll,100);
+        //TODO:Включить обновление треков в фоне
         //startService(new Intent(MainActivity.this,Delayed.class));
-        //(FloatingActionButton)findViewById(R.id.floatingActionButton).setOnClickListener(this);
     }
-/*
-    private Runnable updateAll = new Runnable() {
-        @Override
-        public void run() {
-
-            List<Track>tracks = FB.getTracks();
-            if(mAuth.getCurrentUser()==null){
-                handlerUpdateDatabse.postDelayed(this,50);
-                return;
-            }
-
-            if(tracks==null || tracks.size()==0) {
-                FB.getContactsFromFirebase();
-                FB.getUserData();
-                //FB.getTracksChina();
-                handlerUpdateDatabse.postDelayed(this, 50);
-                Log.d("Main","postDelay");
-                return;
-            }
-            trackViewModel.deleteAll();
-            for (Track track:tracks){
-                Track24 getInformTrack = new Track24();
-                String result = "";
-                getInformTrack.execute("https://api.track24.ru/tracking.json.php?apiKey=b03370759b96d56d48d0541e9402e86e&pretty=true&domain=demo.track24.ru&lng=en&code="+track.trackNumber);
-                try{
-                    result = getInformTrack.get();
-                    track.status = result;
-                    Log.d("Main",result);
-                    trackViewModel.insert(track);
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-
-            }
-            // makeNotify();
-        }
-    };*/
-
-
-
     private void makeNotify(){
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(MainActivity.this, CHANNEL_ID)
@@ -135,6 +90,7 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     private void startJob(){
+        //TODO:разобраться с временем отложки
         ComponentName componentName = new ComponentName(this, JobUpdateTracks.class);
         JobInfo info = new JobInfo.Builder(123, componentName)
                 //.setMinimumLatency(1000*60*10)

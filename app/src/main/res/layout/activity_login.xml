@@ -11,7 +11,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="LoginActivity">
-
+    <!-- TODO:Сделать фон красивый, переделать разметку под новый фон-->
     <EditText
         android:id="@+id/username"
         android:layout_width="0dp"
@@ -42,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username" />
-
+    <!-- TODO:Найти красивые кнопки-->
     <Button
         android:id="@+id/login"
         android:layout_width="123dp"
@@ -60,7 +60,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password"
         app:layout_constraintVertical_bias="0.19999999" />
-
+    <!-- TODO:Перенести progress bar -->
     <ProgressBar
         android:id="@+id/loading"
         android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.3" />
-
+    <!--TODO:Выровнять кнопку -->
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
@@ -100,7 +100,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/loading"
         app:layout_constraintVertical_bias="0.0" />
-
+    <!-- TODO:Убрать надпись, оставить проверку на пустоту полей-->
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.52" />
-
+    <!-- TODO:Сделать форум восстановки пароля-->
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"

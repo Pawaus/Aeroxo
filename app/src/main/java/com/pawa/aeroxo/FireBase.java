@@ -194,6 +194,7 @@ public class FireBase {
                     }
                     isUpdateContacts = true;
                     contactsLiveData.setValue(contacts);
+                    //TODO:Добавление контактов в базу данных
                     getTracksChina();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -223,6 +224,7 @@ public class FireBase {
                         userDataLive.setValue(UserData);
                     }else{
                         Log.d("Firebase","No document with name "+mAuth.getCurrentUser().getEmail().toString());
+                        //TODO:обработка случая, когда у клиента нет странички на сервере
                     }
                 }else{
                     Log.d("Firebase","No document");

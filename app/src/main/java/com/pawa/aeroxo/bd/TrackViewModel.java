@@ -32,7 +32,7 @@ public class TrackViewModel extends AndroidViewModel {
     public void deleteAll(){
         repository.deleteAll();
     }
-
+//TODO:Решить вопрос с обновлением записей в таблицах - удалять все или обновлять по одной
     public void update(Track track){
         repository.update(track);
     }

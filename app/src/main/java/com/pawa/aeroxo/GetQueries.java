@@ -31,6 +31,7 @@ public class GetQueries {
         }
         bufferedReader.close();
         try {
+            //TODO:добавить проверку на нормальный ответ сервера
             JSONObject reader = new JSONObject(response.toString());
             JSONObject data = reader.getJSONObject("data");
             JSONObject lastPoint = data.getJSONObject("lastPoint");
