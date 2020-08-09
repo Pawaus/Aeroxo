@@ -10,13 +10,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class GetQueries {
-    public String doGet(String url)
+    public String doGet(String trackNum)
             throws Exception {
-
-        URL obj = new URL(url);
+        String urlApi = "https://api.track24.ru/tracking.json.php?apiKey=b03370759b96d56d48d0541e9402e86e&pretty=true&domain=demo.track24.ru&lng=en&code=";
+        URL obj = new URL(urlApi+trackNum);
         HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
-
-        //add reuqest header
         connection.setRequestMethod("GET");
         connection.setRequestProperty("User-Agent", "Mozilla/5.0" );
         connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
@@ -30,20 +28,22 @@ public class GetQueries {
             response.append(inputLine);
         }
         bufferedReader.close();
+        connection.disconnect();
         try {
-            //TODO:добавить проверку на нормальный ответ сервера
             JSONObject reader = new JSONObject(response.toString());
-            JSONObject data = reader.getJSONObject("data");
-            JSONObject lastPoint = data.getJSONObject("lastPoint");
-            String lastPos = lastPoint.getString("operation");
-            lastPos = lastPos + ", " +lastPoint.getString("eventDateTime");
-            return lastPos;
+            JSONsheets parcer = new JSONsheets(reader);
+            if (parcer.getStatus().equals("ok")){
+                if(!parcer.getLastStatus().equals("error"))
+                    return parcer.getLastStatus();
+                else
+                    return "error";
+            }else{
+                return "error";
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
+            return "error";
         }
-
-
-        return response.toString();
     }
 }
