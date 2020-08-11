@@ -154,8 +154,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             try {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 GoogleSignInAccount account = task.getResult(ApiException.class);
+                sharedPreferences = getSharedPreferences("photoUrl", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("url",account.getPhotoUrl().toString());
+                editor.apply();
                 firebaseAuthWithGoogle(account);
-                //StartMain();
             } catch (ApiException e) {
                 Toast.makeText(getApplicationContext(),R.string.error_signin_google,Toast.LENGTH_LONG).show();
                 loadingProgressBar.setVisibility(View.INVISIBLE);
@@ -194,6 +197,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (task.isSuccessful()) {
                             setResult(1234);
                             FirebaseUser user = mAuth.getCurrentUser();
+                            sharedPreferences = getSharedPreferences("photoUrl", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("url","null");
+                            editor.apply();
                             StartMain();
                         } else {
                             Toast.makeText(LoginActivity.this, "Неверные почта или пароль.",
@@ -224,6 +231,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             setResult(1234);
+                            sharedPreferences = getSharedPreferences("photoUrl", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("url","null");
+                            editor.apply();
                             StartMain();
                         } else {
                             // If sign in fails, display a message to the user.
