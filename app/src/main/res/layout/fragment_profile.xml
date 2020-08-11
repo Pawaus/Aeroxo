@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:theme="@style/styleProfile"
     android:orientation="vertical"
+    android:background="@drawable/layerlinearprofile3"
     tools:context=".Profile">
     <!-- TODO:может переделать на coordinator-->
     <LinearLayout
@@ -18,10 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="10"
-            android:layout_margin="8dp"
+
+            android:background="@drawable/layerlinearprofile"
             android:orientation="horizontal">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageProfile"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -48,16 +50,23 @@
 
             </LinearLayout>
             <ImageView
-                android:layout_width="40dp"
-                android:src="@drawable/logout"
-                android:layout_height="40dp" />
+                android:layout_width="30dp"
+                android:src="@drawable/ic_action_name"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="16dp"
+                android:layout_height="30dp"
+                android:id="@+id/exit"/>
             <!-- TODO:Сделать активной кнопку-->
         </LinearLayout>
         <!-- TODO:Посмотреть другой скролл, более новый из шаблонов-->
         <ScrollView
             android:id="@+id/scrollProfile"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/linearprofile2">
 
             <LinearLayout
                 android:id="@+id/linearInScroll"
@@ -68,16 +77,6 @@
             </LinearLayout>
 
         </ScrollView>
-        <!-- TODO:Удалить ее-->
-        <Button
-            android:id="@+id/btnSignOut"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="@android:color/background_light"
-            android:text="@string/button_exit"
-            android:visibility="invisible"
-            android:textColor="@color/grayAeroxo" />
         <!-- TODO:Поменять или перенести прогресс бар-->
         <ProgressBar
             android:layout_width="wrap_content"
