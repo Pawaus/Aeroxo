@@ -88,33 +88,7 @@ public class Profile extends Fragment  {
         profileModelView = new ViewModelProvider(getActivity()).get(ProfileModelView.class);
         trackViewModel = new ViewModelProvider(getActivity()).get(TrackViewModel.class);
         isUpdate = false;
-        profileModelView.getTracksFirebase().observe(getActivity(), new Observer<List<Track>>() {
-            @Override
-            public void onChanged(final List<Track> tracks) {
-                isUpdate = true;
-                Toast.makeText(getActivity(), "Is up to date", Toast.LENGTH_LONG).show();
-                Log.d("profile", "get tracks");
-                progressBar.setVisibility(View.INVISIBLE);
-                offProgress();
-                tracksDatabase = trackViewModel.getTracks().getValue();
-                //TODO: выводить кнопочку обновить, если треки поменялись
-                linearInScroll.removeAllViews();
-                for (Track track : tracks) {
-                    AddViewTrackInScroll(track);
-                    /**/
-                }
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        trackViewModel.deleteAll();
-                        for(Track track:tracks){
-                            trackViewModel.insert(track);
-                        }
-                    }
-                }).start();
-
-            }
-        });
+        profileModelView.getTracksFirebase().observe(getActivity(),updateTracks );
         profileModelView.getUserData().observe(getActivity(), new Observer<Map<String, Object>>() {
             @Override
             public void onChanged(Map<String, Object> stringObjectMap) {
@@ -157,6 +131,14 @@ public class Profile extends Fragment  {
                 trackViewModel.deleteAll();
                 startActivity(new Intent(getActivity(),LoginActivity.class));
                 getActivity().finish();
+            }
+        });
+        root.findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                profileModelView.getTracksFirebase().removeObserver(updateTracks);
+                profileModelView = new ViewModelProvider(getActivity()).get(ProfileModelView.class);
+                profileModelView.getTracksFirebase().observe(getActivity(),updateTracks);
             }
         });
         setRetainInstance(true);
@@ -222,6 +204,27 @@ public class Profile extends Fragment  {
         linearInScroll.addView(linearLayout,layoutParams);
     }
 
+    private Observer<List<Track>> updateTracks = new Observer<List<Track>>() {
+        @Override
+        public void onChanged(List<Track> tracks) {
+            isUpdate = true;
+            Toast.makeText(getActivity(), "Is up to date", Toast.LENGTH_LONG).show();
+            Log.d("profile", "get tracks");
+            progressBar.setVisibility(View.INVISIBLE);
+            offProgress();
+            tracksDatabase = trackViewModel.getTracks().getValue();
+            //TODO: выводить кнопочку обновить, если треки поменялись
+            linearInScroll.removeAllViews();
+            for (Track track : tracks) {
+                AddViewTrackInScroll(track);
+            }
+                    trackViewModel.deleteAll();
+                    for(Track track:tracks){
+                        trackViewModel.insert(track);
+                    }
+
+        }
+    };
 
     private void offProgress(){progressBar.setVisibility(View.INVISIBLE);}
 
