@@ -7,6 +7,7 @@ import android.content.SharedPreferences.Editor;
 
 import android.graphics.Typeface;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,12 +49,12 @@ import java.util.Map;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class Profile extends Fragment {
+public class Profile extends Fragment  {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private TextView textName,textPost;
-    private ImageView profileImage;
+    private de.hdodenhof.circleimageview.CircleImageView profileImage;
     private SharedPreferences sharedPreferences;
     private final String NAME = "Name";
     private final String SURNAME = "Surname";
@@ -66,6 +68,12 @@ public class Profile extends Fragment {
     private ProfileModelView profileModelView;
     ProgressBar progressBar;
     List<Track>tracksDatabase;
+    private boolean isUpdate;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -75,27 +83,35 @@ public class Profile extends Fragment {
         sharedPreferences = getActivity().getPreferences(MODE_PRIVATE);
         textName.setText(sharedPreferences.getString(NAME,""));
         textPost.setText(sharedPreferences.getString(POST,""));
+        sharedPreferences = getActivity().getSharedPreferences("photoUrl",MODE_PRIVATE);
+        Glide.with(getActivity()).load(Uri.parse(sharedPreferences.getString("url",""))).into(profileImage);
         profileModelView = new ViewModelProvider(getActivity()).get(ProfileModelView.class);
         trackViewModel = new ViewModelProvider(getActivity()).get(TrackViewModel.class);
+        isUpdate = false;
         profileModelView.getTracksFirebase().observe(getActivity(), new Observer<List<Track>>() {
             @Override
-            public void onChanged(List<Track> tracks) {
+            public void onChanged(final List<Track> tracks) {
+                isUpdate = true;
                 Toast.makeText(getActivity(), "Is up to date", Toast.LENGTH_LONG).show();
                 Log.d("profile", "get tracks");
                 progressBar.setVisibility(View.INVISIBLE);
                 offProgress();
                 tracksDatabase = trackViewModel.getTracks().getValue();
                 //TODO: выводить кнопочку обновить, если треки поменялись
+                linearInScroll.removeAllViews();
                 for (Track track : tracks) {
-                    //AddViewTrackInScroll(track);
-                    boolean isContain = false;
-                    for (Track track1 : tracksDatabase) {
-                        if (track.equals(track1))
-                            isContain = true;
-                    }
-                    if (!isContain)
-                        trackViewModel.insert(track);
+                    AddViewTrackInScroll(track);
+                    /**/
                 }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        trackViewModel.deleteAll();
+                        for(Track track:tracks){
+                            trackViewModel.insert(track);
+                        }
+                    }
+                }).start();
 
             }
         });
@@ -110,8 +126,11 @@ public class Profile extends Fragment {
             public void onChanged(List<Track> tracks) {
                 Log.d("profile", "on change database");
                 Log.d("profile", String.valueOf(trackViewModel.getTracks().getValue().size()));
-                for (Track track : tracks) {
-                    AddViewTrackInScroll(track);
+                if(!isUpdate) {
+                    linearInScroll.removeAllViews();
+                    for (Track track : tracks) {
+                        AddViewTrackInScroll(track);
+                    }
                 }
             }
         });
@@ -123,16 +142,19 @@ public class Profile extends Fragment {
         final View root = inflater.inflate(R.layout.fragment_profile, container, false);
         textName = (TextView)root.findViewById(R.id.viewNameProfile);
         textPost = (TextView)root.findViewById(R.id.viewPost);
-        profileImage = (ImageView)root.findViewById(R.id.imageProfile);
+        profileImage = (de.hdodenhof.circleimageview.CircleImageView)root.findViewById(R.id.imageProfile);
         linearInScroll = (LinearLayout)root.findViewById(R.id.linearInScroll);
-        root.findViewById(R.id.btnSignOut).setOnClickListener(new View.OnClickListener() {
+        root.findViewById(R.id.exit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(getActivity(),"Logout",Toast.LENGTH_LONG).show();
                 sharedPreferences = getActivity().getSharedPreferences("isAuthoraized",MODE_PRIVATE);
                 Editor editor = sharedPreferences.edit();
                 editor.putInt("auth",0);
+                editor.putString("url","null");
                 editor.apply();
                 mAuth.signOut();
+                trackViewModel.deleteAll();
                 startActivity(new Intent(getActivity(),LoginActivity.class));
                 getActivity().finish();
             }
@@ -178,7 +200,7 @@ public class Profile extends Fragment {
         ed.apply();
     }
     private void AddViewTrackInScroll(Track track){
-        LinearLayout linearLayout = new LinearLayout(getContext());
+        LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         TextView textNameTrack = new TextView(getContext());
@@ -199,5 +221,8 @@ public class Profile extends Fragment {
         linearLayout.addView(textStatus,layoutParams);
         linearInScroll.addView(linearLayout,layoutParams);
     }
+
+
     private void offProgress(){progressBar.setVisibility(View.INVISIBLE);}
+
 }
