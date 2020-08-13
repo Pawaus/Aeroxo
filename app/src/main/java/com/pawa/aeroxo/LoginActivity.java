@@ -109,6 +109,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             loginButton.setEnabled(true);
             textRegistration.setClickable(false);
         } else {
+            if((passwordEditText.getText().length()==0)||(usernameEditText.getText().length()==0)){
+                loginButton.setEnabled(false);
+                textRegistration.setClickable(false);
+            }
             //loginFormState.setValue(new LoginFormState(true));
             loginButton.setEnabled(true);
             textRegistration.setClickable(true);
@@ -188,6 +192,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
     public boolean login(String email,String password){
         loadingProgressBar.setVisibility(View.VISIBLE);
+
         loginButton.setEnabled(false);
         textRegistration.setClickable(false);
         mAuth.signInWithEmailAndPassword(email, password)
