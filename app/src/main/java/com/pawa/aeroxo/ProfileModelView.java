@@ -26,4 +26,5 @@ public class ProfileModelView extends AndroidViewModel {
     public LiveData<Map<String,Object>> getUserData(){
         return FB.getUserDataLive();
     }
+    public void updateTracks(){FB.getTracksChina();}
 }

@@ -54,6 +54,7 @@ public class FireBase {
     public boolean getTracksChina(){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("China");
+        tracks.clear();
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -101,15 +102,23 @@ public class FireBase {
         for(Track track:tracks){
             Track24 getInformTrack = new Track24();
             String result = "";
+            Log.d("Query","FB Query");
             getInformTrack.execute(track.trackNumber);
             try{
                 result = getInformTrack.get();
-                track.status = result;
-                Log.d("Track24",result);
+                Log.d("Query","FB get Inform");
+
+                if(result.equals("error")){
+                    track.status = "try  to refresh";
+                }else
+                    track.status = result;
+                Log.d("Query",result);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
+        //if(tracksLiveData.getValue()!=null)
+            //tracksLiveData.getValue().clear();
         tracksLiveData.postValue(tracks);
     }
     public void getContactsFromFirebase(){

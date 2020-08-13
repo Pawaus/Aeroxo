@@ -136,9 +136,13 @@ public class Profile extends Fragment  {
         root.findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                profileModelView.getTracksFirebase().removeObserver(updateTracks);
+                /*profileModelView.getTracksFirebase().removeObserver(updateTracks);
                 profileModelView = new ViewModelProvider(getActivity()).get(ProfileModelView.class);
-                profileModelView.getTracksFirebase().observe(getActivity(),updateTracks);
+                profileModelView.getTracksFirebase().observe(getActivity(),updateTracks);*/
+                progressBar.setVisibility(View.VISIBLE);
+                linearInScroll.removeAllViews();
+                trackViewModel.deleteAll();
+                profileModelView.updateTracks();
             }
         });
         setRetainInstance(true);
@@ -208,6 +212,12 @@ public class Profile extends Fragment  {
         @Override
         public void onChanged(List<Track> tracks) {
             isUpdate = true;
+            Log.d("profile","tracks in FB "+ String.valueOf(tracks.size()));
+            if(tracks.size()==0) {
+                tracks = trackViewModel.getTracks().getValue();
+                //return;
+            }
+            Log.d("profile","tracks in FB "+ String.valueOf(tracks.size()));
             Toast.makeText(getActivity(), "Is up to date", Toast.LENGTH_LONG).show();
             Log.d("profile", "get tracks");
             progressBar.setVisibility(View.INVISIBLE);
