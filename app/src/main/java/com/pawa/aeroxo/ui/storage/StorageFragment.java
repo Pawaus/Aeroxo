@@ -19,6 +19,11 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.pawa.aeroxo.BarcodeCaptureActivity;
 import com.pawa.aeroxo.MainActivity;
 import com.pawa.aeroxo.R;
@@ -35,6 +40,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -153,4 +159,66 @@ public class StorageFragment extends Fragment {
         }else
             super.onActivityResult(requestCode, resultCode, data);
     }
+
+    //Увеличение количества на складе
+    public void incVal(String getfromBase, DatabaseReference myRef){
+        try {
+            JSONObject reader = new JSONObject(getfromBase);
+            JSONArray array = reader.getJSONArray("result");
+            JSONArray result = new JSONArray();
+            for(int i = 0;i<array.length();i++){
+                String tmp = array.getJSONArray(i).getString(0);
+                if(tmp.equals("mtr1")){
+                    int t = array.getJSONArray(i).getInt(2);
+                    Toast.makeText(getActivity(),Integer.toString(t),Toast.LENGTH_LONG).show();
+                    JSONArray inArray = array.getJSONArray(i);
+                    JSONArray resultStringTable = new JSONArray();
+                    resultStringTable.put(inArray.get(0));
+                    resultStringTable.put(inArray.get(1));
+                    resultStringTable.put(inArray.getInt(2) +10);
+                    resultStringTable.put(inArray.get(3));
+                    resultStringTable.put(inArray.get(4));
+                    result.put(i,resultStringTable);
+
+                }else {
+                    result.put(i,array.getJSONArray(i));
+                }
+            }
+            JSONObject toServer = new JSONObject();
+            toServer.put("result",result);
+            myRef.setValue(toServer.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Получение информации из БД
+    /*
+
+    private void getRealtimeData(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("myArray");
+        //final String[] fromBase = new String[1];
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String value = dataSnapshot.getValue(String.class);
+                //      fromBase[0] = dataSnapshot.getValue(String.class);
+                fromBase = value;
+                //incVal(value,myRef);
+                //Toast.makeText(getActivity(),"recieved",Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //Toast.makeText(getActivity(),"cancelled",Toast.LENGTH_LONG).show();
+                return;
+            }
+        });
+        //incVal(fromBase,myRef);
+
+
+    }*/
+
 }
