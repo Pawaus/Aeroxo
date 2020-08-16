@@ -12,19 +12,19 @@
     <fragment
         android:id="@+id/navigation_storage"
         android:name="com.pawa.aeroxo.ui.storage.StorageFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_storage"
         tools:layout="@layout/fragment_storage" />
 
     <fragment
         android:id="@+id/navigation_cheks"
         android:name="com.pawa.aeroxo.ui.cheks.CheksFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_checks"
         tools:layout="@layout/fragment_cheks" />
 
     <fragment
         android:id="@+id/navigation_uchet"
         android:name="com.pawa.aeroxo.ui.uchet.UchetFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_uchet"
         tools:layout="@layout/fragment_uchet" />
 
 </navigation>

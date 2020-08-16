@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Aeroxo</string>
-    <string name="title_home">Склад</string>
-    <string name="title_dashboard">Чеки</string>
-    <string name="title_notifications">Учет</string>
+    <string name="title_storage">Склад</string>
+    <string name="title_checks">Чеки</string>
+    <string name="title_uchet">Учет</string>
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">Необходимо предоставить разрешения камере</string>
     <string name="no_camera_permission">Невозможно запустить приложение, отсутствуют разрешения для камеры. Приложение будет закрыто.</string>
