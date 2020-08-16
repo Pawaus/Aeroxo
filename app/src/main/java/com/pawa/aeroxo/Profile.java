@@ -100,6 +100,7 @@ public class Profile extends Fragment  {
             public void onChanged(List<Track> tracks) {
                 Log.d("profile", "on change database");
                 Log.d("profile", String.valueOf(trackViewModel.getTracks().getValue().size()));
+
                 if(!isUpdate) {
                     linearInScroll.removeAllViews();
                     for (Track track : tracks) {
@@ -217,13 +218,16 @@ public class Profile extends Fragment  {
                 tracks = trackViewModel.getTracks().getValue();
                 //return;
             }
+            sharedPreferences = getActivity().getPreferences(MODE_PRIVATE);
+            Editor ed = sharedPreferences.edit();
+            ed.putString("fullName",profileModelView.fullName());
+            ed.apply();
             Log.d("profile","tracks in FB "+ String.valueOf(tracks.size()));
             Toast.makeText(getActivity(), "Is up to date", Toast.LENGTH_LONG).show();
             Log.d("profile", "get tracks");
             progressBar.setVisibility(View.INVISIBLE);
             offProgress();
             tracksDatabase = trackViewModel.getTracks().getValue();
-            //TODO: выводить кнопочку обновить, если треки поменялись
             linearInScroll.removeAllViews();
             for (Track track : tracks) {
                 AddViewTrackInScroll(track);

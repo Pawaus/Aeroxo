@@ -27,4 +27,7 @@ public class ProfileModelView extends AndroidViewModel {
         return FB.getUserDataLive();
     }
     public void updateTracks(){FB.getTracksChina();}
+    public String fullName(){
+        return FB.getFullName();
+    }
 }

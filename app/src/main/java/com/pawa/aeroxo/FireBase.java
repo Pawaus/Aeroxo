@@ -46,6 +46,9 @@ public class FireBase {
     LiveData<List<Track>>getTracksLive(){return tracksLiveData;}
     LiveData<List<Contact>>getContactsLive(){return contactsLiveData;}
     LiveData<Map<String,Object>>getUserDataLive(){return userDataLive;}
+    public String getFullName(){
+        return fullName;
+    }
     FireBase(){
         mAuth = FirebaseAuth.getInstance();
         getContactsFromFirebase();
